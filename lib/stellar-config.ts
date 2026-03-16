@@ -1,4 +1,4 @@
-import * as StellarSdk from '@stellar/js-stellar-sdk';
+import * as StellarSdk from '@stellar/stellar-sdk';
 
 export const STELLAR_CONFIG = {
   // Network configuration
