@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, PlusCircle, Wallet, TrendingUp, CircleDot, ArrowRight } from 'lucide-react';
+import { ThemeToggle } from '@/components/theme-toggle';
+import { authenticatedFetch } from '@/lib/auth-client';
 
 interface Circle {
   id: string;
@@ -37,16 +39,12 @@ export default function Home() {
       setUserName(userData.firstName || userData.email);
     }
 
-    fetchCircles(token);
+    fetchCircles();
   }, []);
 
-  const fetchCircles = async (token: string) => {
+  const fetchCircles = async () => {
     try {
-      const response = await fetch('/api/circles', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+      const response = await authenticatedFetch('/api/circles');
       if (response.ok) {
         const data = await response.json();
         setCircles(data.circles || []);
@@ -196,7 +194,8 @@ function LandingPage() {
             <CircleDot className="h-8 w-8 text-primary" />
             <span className="text-xl font-bold text-foreground">Stellar Ajo</span>
           </div>
-          <div className="flex gap-4">
+          <div className="flex gap-4 items-center">
+            <ThemeToggle />
             <Button variant="outline" onClick={() => router.push('/auth/login')}>
               Sign In
             </Button>
