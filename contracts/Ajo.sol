@@ -16,8 +16,7 @@ contract Ajo {
     uint256 public maxMembers;
 
     /// @notice List of all members in the Ajo pool
-    mapping(uint256 => address) public members;
-    uint256 public membersCount;
+    address[] public members;
 
     /// @notice Mapping from member address to their current balance in the pool
     mapping(address => uint256) public balances;
@@ -25,11 +24,8 @@ contract Ajo {
     /// @notice The total amount currently held in the pool
     uint256 public totalPool;
 
-    /// @notice Mapping from member address to the timestamp of their last deposit
-    mapping(address => uint256) public lastDepositAt;
-
     /// @notice Event emitted when a deposit is made
-    event DepositMade(address indexed member, uint256 amount, uint256 timestamp);
+    event Deposited(address indexed member, uint256 amount);
 
     /**
      * @dev Struct to represent a member's state within the pool
@@ -42,6 +38,9 @@ contract Ajo {
         bool hasContributed;
         uint256 totalContributed;
     }
+
+    error InvalidContribution();
+    error AjoIsFull();
 
     /**
      * @dev Initializes the Ajo pool with core parameters
@@ -64,15 +63,17 @@ contract Ajo {
      * @dev Enforces strict deposit of contributionAmount and updates pool state.
      */
     function deposit() external payable {
-        require(msg.value == contributionAmount, "Deposit must equal contribution amount");
+        if(msg.value != contributionAmount) revert InvalidContribution();
+        if(members.length >= maxMembers) revert AjoIsFull();
 
-        // Record the timestamp of the deposit mapping it to the user
-        lastDepositAt[msg.sender] = block.timestamp;
+        bool isNewMember = balances[msg.sender] == 0;
+        if(isNewMember) {
+             members.push(msg.sender);
+        }
 
-        // Update balances and total pool tracking variable securely
         balances[msg.sender] += msg.value;
         totalPool += msg.value;
 
-        emit DepositMade(msg.sender, msg.value, block.timestamp);
+        emit Deposited(msg.sender, msg.value);
     }
 }
