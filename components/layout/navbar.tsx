@@ -173,7 +173,7 @@ export function Navbar() {
             <NotificationBell />
             <ThemeToggle />
             <div className="hidden sm:block">
-              <ConnectButton /> {/* <-- replaced WalletButton */}
+              <ConnectButton />
             </div>
 
             {/* Hamburger — mobile only */}
@@ -235,7 +235,7 @@ export function Navbar() {
 
             {/* Mobile Wallet Button */}
             <div className="mt-6 pt-4 border-t sm:hidden">
-              <ConnectButton /> {/* <-- replaced WalletButton */}
+              <ConnectButton />
             </div>
           </div>
         </div>
